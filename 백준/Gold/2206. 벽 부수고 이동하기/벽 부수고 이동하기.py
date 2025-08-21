@@ -2,31 +2,28 @@ import sys
 from collections import deque
 input = sys.stdin.readline
 
-n, m = map(int, input().split())
-graph = [list(map(int, list(input().strip()))) for _ in range(n)]
+N, M = map(int, input().split())
+graph = [list(map(int, input().strip())) for _ in range(N)]
 
 direction = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-
-visited = [[[-1] * m for _ in range(n)] for _ in range(2)]
-visited[0][0][0] = 1
-queue = deque([(0, 0, 0)])
-
-
+dist = [[[-1] * M for _ in range(N)] for _ in range(2)]  # z, x, y
+queue = deque([(0, 0, 0)])  # z, x, y
+dist[0][0][0] = 1
 while queue:
     zp, xp, yp = queue.popleft()
-    if xp == n-1 and yp == m-1:
-        print(visited[zp][xp][yp])
+    if xp == N-1 and yp == M-1:
+        print(dist[zp][xp][yp])
         exit(0)
     for dx, dy in direction:
         nx, ny = xp + dx, yp + dy
-        if not (0 <= nx < n and 0 <= ny < m):
+        if not (0 <= nx < N and 0 <= ny < M):
             continue
-        # 이동할 좌표가 벽이고 벽을 한번도 부수지 않았을 때
+        # 이동할 곳이 벽이면서 내가 벽을 부술 수 있으면
         if graph[nx][ny] == 1 and zp == 0:
             queue.append((1, nx, ny))
-            visited[1][nx][ny] = visited[0][xp][yp] + 1
-        # 이동할 좌표가 빈 공간이고 한번도 방문하지 않았을 때
-        if graph[nx][ny] == 0 and visited[zp][nx][ny] == -1:
+            dist[1][nx][ny] = dist[zp][xp][yp] + 1
+        # 이동할 곳이 이동할 수 있으면서 아직 방문하지 않았다면
+        if graph[nx][ny] == 0 and dist[zp][nx][ny] == -1:
             queue.append((zp, nx, ny))
-            visited[zp][nx][ny] = visited[zp][xp][yp] + 1
+            dist[zp][nx][ny] = dist[zp][xp][yp] + 1
 print(-1)

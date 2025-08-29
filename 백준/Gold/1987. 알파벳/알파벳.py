@@ -6,19 +6,15 @@ graph = [list(input().strip()) for _ in range(R)]
 
 direction = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 visited = [False] * 26
-
-init_idx = ord(graph[0][0]) - ord("A")
-visited[init_idx] = True
-answer = 1  # 최대 몇 칸을 움직일 수 있는지.
-path = []  # 이동하는 경로
+visited[ord(graph[0][0]) - ord("A")] = True
+answer = 1
 
 
-def backtrack(x, y):
+def backtrack(x, y, cnt):
     global answer
 
-    path.append(graph[x][y])
-    if answer < len(path):
-        answer = len(path)
+    if answer < cnt:
+        answer = cnt
 
     for dx, dy in direction:
         nx, ny = x + dx, y + dy
@@ -27,10 +23,9 @@ def backtrack(x, y):
         nxt = ord(graph[nx][ny]) - ord("A")
         if not visited[nxt]:
             visited[nxt] = True
-            backtrack(nx, ny)
+            backtrack(nx, ny, cnt + 1)
             visited[nxt] = False
-    path.pop()
 
 
-backtrack(0, 0)
+backtrack(0, 0, 1)
 print(answer)

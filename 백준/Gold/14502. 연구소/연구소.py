@@ -2,14 +2,6 @@ import sys
 from collections import deque
 input = sys.stdin.readline
 
-"""
-안전 영역 크기의 최댓값을 구하는 프로그램
-
-풀이
-- 벽을 반드시 3개 세워야 함.
-- 빈칸을 전부 확인한 다음 3중 for문을 돌며 해당 칸을 벽으로 막고 BFS를 돌린 후 안정영역을 센다.
-"""
-
 N, M = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(N)]
 

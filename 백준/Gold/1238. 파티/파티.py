@@ -23,18 +23,20 @@ def dijkstra(graph, start, N):
 
 
 graph = [[] for _ in range(N + 1)]
+rev_graph = [[] for _ in range(N + 1)]
 
 for _ in range(M):
     s, e, c = map(int, input().split())
     graph[s].append((c, e))
+    rev_graph[e].append((c, s))
 
 dist = dijkstra(graph, X, N)
+rev_dist = dijkstra(rev_graph, X, N)
 
 answer = 0
 for i in range(1, N+1):
     if i == X:
         continue
-    d = dijkstra(graph, i, N)
-    answer = max(answer, d[X] + dist[i])
+    answer = max(answer, dist[i] + rev_dist[i])
 
 print(answer)

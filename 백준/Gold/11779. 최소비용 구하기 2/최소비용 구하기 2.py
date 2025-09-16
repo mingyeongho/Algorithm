@@ -1,8 +1,3 @@
-"""
-A번째 도시에서 B번째 도시까지 가는 버스 비용을 최소화
-다익스크라 알고리즘 사용
-"""
-
 import sys
 from collections import defaultdict
 import heapq
@@ -30,7 +25,7 @@ def dijkstra(start):
 
         for nxt_cost, nxt_node in tree[node]:
             new_cost = cost + nxt_cost
-            if new_cost < dist[nxt_node]:
+            if dist[nxt_node] > new_cost:
                 dist[nxt_node] = new_cost
                 heapq.heappush(hq, (new_cost, nxt_node))
                 path[nxt_node] = node

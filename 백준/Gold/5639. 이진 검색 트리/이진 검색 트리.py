@@ -11,21 +11,19 @@ while True:
         break
 
 
-def recur(S):
-    if len(S) == 0:
+def recur(start, end):
+    if start > end:
         return
 
-    left, right = [], []
-    mid = S[0]
-    for s in range(1, len(S)):
-        if mid > S[s]:
-            left.append(S[s])
-        else:
-            right.append(S[s])
-
-    recur(left)
-    recur(right)
-    print(mid)
+    mid = end+1
+    for i in range(start+1, end+1):
+        if S[start] < S[i]:
+            mid = i
+            break
+    recur(start+1, mid-1)
+    recur(mid, end)
+    print(S[start])
+    pass
 
 
-recur(S)
+recur(0, len(S)-1)

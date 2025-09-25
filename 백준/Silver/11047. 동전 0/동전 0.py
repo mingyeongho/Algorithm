@@ -1,13 +1,13 @@
 import sys
 input = sys.stdin.readline
 
-n, k = map(int, input().split())
-
-units = [int(input()) for _ in range(n)]
+N, K = map(int, input().split())
+A = [int(input().strip()) for _ in range(N)]
 
 count = 0
-for unit in units[::-1]:
-    count += k // unit
-    k %= unit
+for i in range(N-1, -1, -1):
+    if K // A[i] > 0:
+        count += K // A[i]
+        K %= A[i]
 
 print(count)

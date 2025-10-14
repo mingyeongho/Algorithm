@@ -1,44 +1,42 @@
 import sys
+from collections import defaultdict
 import heapq
 input = sys.stdin.readline
 
 N, E = map(int, input().split())
-
-graph = [[] for _ in range(N+1)]
+graph = defaultdict(list)
 for _ in range(E):
     a, b, c = map(int, input().split())
     graph[a].append((c, b))
     graph[b].append((c, a))
 v1, v2 = map(int, input().split())
+INF = float("Inf")
 
 
-def dijkstra(graph, start, N):
-    dist = [float("Inf")] * (N+1)
-    dist[start] = 0
-    hq = [(0, start)]
-
+def dijkstra(N, graph, x) -> list[int]:
+    dist = [INF] * (N+1)
+    dist[x] = 0
+    hq = [(0, x)]
     while hq:
-        cost, node = heapq.heappop(hq)
+        cost, xp = heapq.heappop(hq)
 
-        if cost > dist[node]:
+        if cost > dist[xp]:
             continue
 
-        for nxt_cost, nxt_node in graph[node]:
+        for nxt_cost, nxt_node in graph[xp]:
             new_cost = cost + nxt_cost
             if dist[nxt_node] > new_cost:
                 dist[nxt_node] = new_cost
                 heapq.heappush(hq, (new_cost, nxt_node))
-
     return dist
 
 
-d = dijkstra(graph, 1, N)
-dV1 = dijkstra(graph, v1, N)
-dV2 = dijkstra(graph, v2, N)
+dist = dijkstra(N, graph, 1)
+dist1 = dijkstra(N, graph, v1)
+dist2 = dijkstra(N, graph, v2)
 
-route1 = d[v1] + dV1[v2] + dV2[N]
-route2 = d[v2] + dV2[v1] + dV1[N]
+path1 = dist[v1] + dist1[v2] + dist2[N]
+path2 = dist[v2] + dist2[v1] + dist1[N]
 
-answer = min(route1, route2)
-
-print(answer if answer != float("Inf") else -1)
+answer = min(path1, path2)
+print(answer if answer != INF else -1)

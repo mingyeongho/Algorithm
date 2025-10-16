@@ -1,31 +1,34 @@
 import sys
-from collections import defaultdict
+import heapq
 input = sys.stdin.readline
 
+INF = float("Inf")
+
+
+def dijkstra(graph, N, x):
+    dist = [INF] * (N+1)
+    dist[x] = 0
+    hq = [(0, x)]
+    while hq:
+        cost, node = heapq.heappop(hq)
+        if cost > dist[node]:
+            continue
+        for nxt_cost, nxt_node in graph[node]:
+            new_cost = dist[node] + nxt_cost
+            if dist[nxt_node] > new_cost:
+                dist[nxt_node] = new_cost
+                heapq.heappush(hq, (new_cost, nxt_node))
+    idx = dist.index(max(dist[1:]))
+    return dist[1:], idx
+
+
 N = int(input().strip())
-tree = defaultdict(list)
+graph = [[] * (N+1) for _ in range(N+1)]
 for _ in range(N-1):
-    parent, child, cost = map(int, input().split())
-    tree[parent].append((child, cost))
-    tree[child].append((parent, cost))
+    u, v, c = map(int, input().split())
+    graph[u].append((c, v))
+    graph[v].append((c, u))
 
-
-def dfs(cur: int) -> tuple[int, int]:
-    stk = [cur]
-    costs = [(-1, -1)] * (N+1)
-    costs[cur] = (0, cur)
-    while stk:
-        xp = stk.pop()
-        for nx, cost in tree[xp]:
-            if costs[nx][0] > -1:
-                continue
-            costs[nx] = (costs[xp][0] + cost, nx)
-            stk.append(nx)
-    mx, idx = max(costs)
-
-    return (idx, mx)
-
-
-n1, n1_cost = dfs(1)
-n2, n2_cost = dfs(n1)
-print(n2_cost)
+dist, idx = dijkstra(graph, N, 1)
+dist2, idx2 = dijkstra(graph, N, idx)
+print(max(dist2))

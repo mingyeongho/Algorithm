@@ -4,22 +4,21 @@ input = sys.stdin.readline
 N = int(input().strip())
 S = list(map(int, input().split()))
 
-left, right = 0, N-1
-mn = 2_000_000_001
-ans_left, ans_right = S[left], S[right]
+st = 0
+en = N-1
+answer = [float("Inf"), st, en]
+while st < en:
+    cur = S[st] + S[en]
 
-while left < right:
-    s = S[left] + S[right]
-    a = abs(s)
+    if abs(cur) < abs(answer[0]):
+        answer = [cur, st, en]
 
-    if a < mn:
-        mn = a
-        ans_left, ans_right = S[left], S[right]
-        if mn == 0:
-            break
-    if s < 0:
-        left += 1
+    if cur == 0:
+        print(S[st], S[en])
+        exit(0)
+    elif cur < 0:
+        st = st + 1
     else:
-        right -= 1
+        en = en - 1
 
-print(ans_left, ans_right)
+print(S[answer[1]], S[answer[2]])

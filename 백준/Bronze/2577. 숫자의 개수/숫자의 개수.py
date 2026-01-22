@@ -1,10 +1,17 @@
 import sys
 input = sys.stdin.readline
 
-a, b, c = [int(input().rstrip()) for _ in range(3)]
-count = [0] * 10
+A = int(input().strip())
+B = int(input().strip())
+C = int(input().strip())
 
-for r in str(a * b * c):
-    count[int(r)] += 1
+def func(arr: list[int]) -> list[int]:
+    temp = str(A * B * C)
+    count = [0] * 10
+    
+    for t in temp:
+        count[int(t)] += 1
+    
+    return count
 
-print(*count, sep='\n')
+print(*func([A, B, C]), sep='\n')

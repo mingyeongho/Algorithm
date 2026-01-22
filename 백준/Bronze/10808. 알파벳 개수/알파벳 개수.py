@@ -1,11 +1,15 @@
 import sys
-
 input = sys.stdin.readline
 
-s = input().rstrip()
+word = input().strip()
+base = ord("a")
 
-alpha = [0] * 26
-for w in s:
-    alpha[ord(w) - ord('a')] += 1
+def func(word: str) -> list[int]:
+    count = [0] * 26
+    
+    for alpha in word:
+        count[ord(alpha) - base] += 1
+    
+    return count
 
-print(*alpha)
+print(*func(word))

@@ -11,7 +11,7 @@ def solution(N, towers):
     for i, tower in enumerate(towers):
         while stk and stk[-1][1] < tower:
             stk.pop()
-        if stk and stk[-1][1] > tower:
+        if stk:
             answer[i] = stk[-1][0] + 1
         stk.append((i, tower))
         

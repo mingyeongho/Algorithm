@@ -1,19 +1,19 @@
 import sys
 input = sys.stdin.readline
 
-n = int(input().rstrip())
-heights = [int(input().rstrip()) for _ in range(n)]
+N = int(input().strip())
+buildings = [int(input().strip()) for _ in range(N)]
 
-count = [0] * n
-stk = []
+def solution(N, buildings):
+    answer = 0
+    stk = [] # height
 
-for i in range(n, 0, -1):
-    h = heights.pop()
+    for height in buildings:
+        while stk and stk[-1] <= height:
+            stk.pop()
+        answer += len(stk)
+        stk.append(height)
 
-    while stk and stk[-1][1] < h:
-        count[i-1] += 1 + count[stk[-1][0]-1]
-        stk.pop()
+    return answer
 
-    stk.append((i, h))
-
-print(sum(count))
+print(solution(N, buildings))

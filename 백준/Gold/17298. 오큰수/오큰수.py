@@ -1,21 +1,20 @@
 import sys
 input = sys.stdin.readline
 
-n = int(input().rstrip())
-arr = list(map(int, input().split()))
+N = int(input().strip())
+array = list(map(int, input().split()))
 
-res = [-1] * n
-stk = []
-for i in range(n, 0, -1):
-    h = arr.pop()
-
-    while stk:
-        if stk[-1] > h:
-            res[i-1] = stk[-1]
-            break
-        else:
+def solution(N, array):
+    answer = [-1] * N
+    stk = [] # n
+    
+    for i in range(N-1, -1, -1):
+        current = array[i]
+        while stk and stk[-1] <= current:
             stk.pop()
+        if stk:
+            answer[i] = stk[-1]
+        stk.append(current)
+    return " ".join(map(str, answer))
 
-    stk.append(h)
-
-print(*res)
+print(solution(N, array))

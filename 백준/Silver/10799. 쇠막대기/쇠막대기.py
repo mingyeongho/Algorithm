@@ -1,17 +1,25 @@
 import sys
+
 input = sys.stdin.readline
 
-x = input().strip()
-stack = []
-count = 0
 
-for i in range(len(x)):
-    if x[i] == '(':
-        stack.append("(")
-    else:
-        stack.pop()
-        if x[i - 1] == '(': # 레이저
-            count += len(stack)
+def solution(ps):
+    answer = 0
+    temp = 0
+    stk = []
+
+    for brk in ps:
+        if brk == "(":
+            stk.append(brk)
+        elif stk and stk[-1] == "(":
+            stk.pop()
+            answer += len(stk) + temp
+            temp += len(stk)
+            stk = []
         else:
-            count += 1
-print(count)
+            temp -= 1
+            answer += 1
+    return answer
+
+ps = input().strip()
+print(solution(ps))

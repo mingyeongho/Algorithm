@@ -1,46 +1,58 @@
 import sys
 from collections import deque
+
 input = sys.stdin.readline
+direction = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
 R, C = map(int, input().split())
 graph = [list(input().strip()) for _ in range(R)]
 
-direction = [(0, 1), (0, -1), (-1, 0), (1, 0)]
 
-def func(R, C, graph) -> str | int:
-    dist = [[[-1, -1] for _ in range(C)] for _ in range(R)]
-    ji = deque()
-    fire = deque()
+def solution(R, C, graph):
+    fire = deque([])
+    fire_dist = [[-1] * C for _ in range(R)]
+    jihun = deque([])
+    jihun_dist = [[-1] * C for _ in range(R)]
+
     for i in range(R):
         for j in range(C):
+            if graph[i][j] == "J":
+                jihun.append((i, j))
+                jihun_dist[i][j] = 0
             if graph[i][j] == "F":
                 fire.append((i, j))
-                dist[i][j][1] = 0
-            elif graph[i][j] == "J":
-                ji.append((i, j))
-                dist[i][j][0] = 0
-    
+                fire_dist[i][j] = 0
+
     while fire:
         xp, yp = fire.popleft()
         for dx, dy in direction:
             nx, ny = xp + dx, yp + dy
             if not (0 <= nx < R and 0 <= ny < C):
                 continue
-            if dist[nx][ny][1] == -1 and graph[nx][ny] == ".":
-                dist[nx][ny][1] = dist[xp][yp][1] + 1
+            if (graph[nx][ny] == "." or graph[nx][ny] == "J") and fire_dist[nx][
+                ny
+            ] == -1:
                 fire.append((nx, ny))
-                
-    while ji:
-        xp, yp = ji.popleft()
+                fire_dist[nx][ny] = fire_dist[xp][yp] + 1
+
+    while jihun:
+        xp, yp = jihun.popleft()
         for dx, dy in direction:
             nx, ny = xp + dx, yp + dy
             if not (0 <= nx < R and 0 <= ny < C):
                 # 탈출
-                return dist[xp][yp][0] + 1
-            if dist[nx][ny][0] == -1 and graph[nx][ny] == "." and (dist[nx][ny][1] == -1 or dist[nx][ny][1] > dist[xp][yp][0] + 1):
-                dist[nx][ny][0] = dist[xp][yp][0] + 1
-                ji.append((nx, ny))
-    
+                return jihun_dist[xp][yp] + 1
+            if (
+                graph[nx][ny] == "."
+                and jihun_dist[nx][ny] == -1
+                and (
+                    fire_dist[nx][ny] == -1
+                    or fire_dist[nx][ny] > jihun_dist[xp][yp] + 1
+                )
+            ):
+                jihun.append((nx, ny))
+                jihun_dist[nx][ny] = jihun_dist[xp][yp] + 1
     return "IMPOSSIBLE"
 
-print(func(R, C, graph))
+
+print(solution(R, C, graph))

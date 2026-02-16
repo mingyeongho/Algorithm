@@ -1,26 +1,27 @@
 import sys
 from collections import deque
+
 input = sys.stdin.readline
-
-f, s, g, u, d = map(int, input().split())
-
-visited = [-1] * (f+1)
+F, S, G, U, D = map(int, input().split())
 
 
-def bfs(f, s, g, u, d, visited):
-    queue = deque([s])
-    visited[s] = 0
-    while queue:
-        sp = queue.popleft()
-        if sp == g:
-            return visited[sp]
-        for c in [sp + u, sp - d]:
-            if not (1 <= c <= f):
+def solution(F, S, G, U, D):
+    dist = [-1] * (F + 1)
+    dist[S] = 0
+    deq = deque([S])
+
+    while deq:
+        xp = deq.popleft()
+        if xp == G:
+            return dist[xp]
+        for dx in [xp + U, xp - D]:
+            if not (0 < dx <= F):
                 continue
-            if visited[c] == -1:
-                queue.append(c)
-                visited[c] = visited[sp] + 1
-    return "use the stairs"
+            if dist[dx] == -1:
+                deq.append(dx)
+                dist[dx] = dist[xp] + 1
+    return -1
 
 
-print(bfs(f, s, g, u, d, visited))
+result = solution(F, S, G, U, D)
+print(result if result > -1 else "use the stairs")

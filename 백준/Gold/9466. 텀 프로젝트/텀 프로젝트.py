@@ -1,31 +1,38 @@
 import sys
+from collections import deque
+
 input = sys.stdin.readline
-sys.setrecursionlimit(10**6)
 
-t = int(input().strip())
-
-
-def dfs(x):
-    global count
-    visited[x] = True
-    team.append(x)
-    nxt = choice[x]
-    if not visited[nxt]:
-        dfs(nxt)
-    else:
-        if nxt in team:
-            count += len(team[team.index(nxt):])
+T = int(input().strip())
 
 
-for _ in range(t):
-    n = int(input().strip())
-    choice = [0] + list(map(int, input().split()))
+def solution(N, graph) -> int:
+    in_degree = [0] * (N + 1)
+    for i in range(1, N + 1):
+        in_degree[graph[i]] += 1
 
-    visited = [True] + [False] * n
+    deq = deque()
+
+    for i in range(1, N + 1):
+        if in_degree[i] == 0:
+            deq.append(i)
+
     count = 0
-    for i in range(1, n+1):
-        if not visited[i]:
-            team = []
-            dfs(i)
 
-    print(n - count)
+    while deq:
+        xp = deq.popleft()
+        count += 1
+
+        nxt = graph[xp]
+        in_degree[nxt] -= 1
+
+        if in_degree[nxt] == 0:
+            deq.append(nxt)
+
+    return count
+
+
+for _ in range(T):
+    N = int(input().strip())
+    graph = [0] + list(map(int, input().split()))
+    print(solution(N, graph))

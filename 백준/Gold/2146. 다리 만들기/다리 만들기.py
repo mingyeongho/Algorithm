@@ -1,50 +1,63 @@
 import sys
 from collections import deque
+
 input = sys.stdin.readline
 
-n = int(input())
-graph = [list(map(int, input().split())) for _ in range(n)]
+N = int(input().strip())
+graph = [list(map(int, input().split())) for _ in range(N)]
 
 direction = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-label = 1
-labels = [[0] * n for _ in range(n)]
-for i in range(n):
-    for j in range(n):
-        if graph[i][j] == 1 and labels[i][j] == 0:
-            queue = deque([(i, j)])
-            labels[i][j] = label
-            while queue:
-                x, y = queue.popleft()
-                for dx, dy in direction:
-                    nx, ny = x + dx, y + dy
-                    if 0 <= nx < n and 0 <= ny < n:
+
+def labeling(N, graph):
+    label = 1
+    labels = [[0] * N for _ in range(N)]
+
+    for i in range(N):
+        for j in range(N):
+            if graph[i][j] == 1 and labels[i][j] == 0:
+                deq = deque([(i, j)])
+                labels[i][j] = label
+
+                while deq:
+                    xp, yp = deq.popleft()
+                    for dx, dy in direction:
+                        nx, ny = xp + dx, yp + dy
+                        if not (0 <= nx < N and 0 <= ny < N):
+                            continue
                         if graph[nx][ny] == 1 and labels[nx][ny] == 0:
+                            deq.append((nx, ny))
                             labels[nx][ny] = label
-                            queue.append((nx, ny))
-            label += 1
+                label += 1
+    return labels
 
-dist = [[-1] * n for _ in range(n)]
-queue = deque()
 
-for i in range(n):
-    for j in range(n):
-        if labels[i][j] != 0:
-            queue.append((i, j))
-            dist[i][j] = 0
+def solution(N, graph):
+    labels = labeling(N, graph)
 
-answer = sys.maxsize
+    dist = [[-1] * N for _ in range(N)]
+    q = deque()
+    for i in range(N):
+        for j in range(N):
+            if labels[i][j] != 0:
+                q.append((i, j))
+                dist[i][j] = 0
 
-while queue:
-    x, y = queue.popleft()
-    for dx, dy in direction:
-        nx, ny = x + dx, y + dy
-        if 0 <= nx < n and 0 <= ny < n:
-            if labels[nx][ny] != 0 and labels[nx][ny] != labels[x][y]:
-                answer = min(answer, dist[x][y] + dist[nx][ny])
-            elif labels[nx][ny] == 0 and dist[nx][ny] == -1:
-                labels[nx][ny] = labels[x][y]
-                dist[nx][ny] = dist[x][y] + 1
-                queue.append((nx, ny))
+    answer = float("Inf")
+    while q:
+        xp, yp = q.popleft()
+        for dx, dy in direction:
+            nx, ny = xp + dx, yp + dy
+            if not (0 <= nx < N and 0 <= ny < N):
+                continue
+            # 라벨링이 안되어있는 바다
+            if labels[nx][ny] == 0 and dist[nx][ny] == -1:
+                labels[nx][ny] = labels[xp][yp]
+                dist[nx][ny] = dist[xp][yp] + 1
+                q.append((nx, ny))
+            elif labels[nx][ny] != labels[xp][yp] and labels[nx][ny] != 0:
+                answer = min(answer, dist[nx][ny] + dist[xp][yp])
+    return answer
 
-print(answer)
+
+print(solution(N, graph))

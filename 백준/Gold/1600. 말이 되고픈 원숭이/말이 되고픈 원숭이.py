@@ -1,39 +1,50 @@
 import sys
 from collections import deque
+
 input = sys.stdin.readline
 
-K = int(input().strip())  # 원숭이가 말의 움직임을 따라할 수 있는 횟수
-W, H = map(int, input().split())  # 가로, 세로
+K = int(input().strip())
+W, H = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(H)]
 
-direction_horse = [(-2, 1), (-1, 2), (1, 2), (2, 1),
-                   (2, -1), (1, -2), (-1, -2), (-2, -1)]
-direction_monkey = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+direction_knight = [
+    (-2, 1),
+    (-1, 2),
+    (1, 2),
+    (2, 1),
+    (2, -1),
+    (1, -2),
+    (-1, -2),
+    (-2, -1),
+]
+direction = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-dist = [[[-1] * W for _ in range(H)] for _ in range(K+1)]
-queue = deque([(0, 0, 0)])
-dist[0][0][0] = 0
-while queue:
-    zp, xp, yp = queue.popleft()
-    if xp == H-1 and yp == W-1:
-        print(dist[zp][xp][yp])
-        exit(0)
-    if zp < K:
-        # 말처럼 움직일 수 있음.
-        for dx, dy in direction_horse:
+
+def solution(K, R, C, graph):
+    dist = [[[-1] * C for _ in range(R)] for _ in range(K + 1)]
+    q = deque([(0, 0, 0)])  # (k, i, j)
+    dist[0][0][0] = 0
+
+    while q:
+        zp, xp, yp = q.popleft()
+        if xp == R - 1 and yp == C - 1:
+            return dist[zp][xp][yp]
+        if zp < K:
+            for dx, dy in direction_knight:
+                nx, ny = xp + dx, yp + dy
+                if not (0 <= nx < R and 0 <= ny < C):
+                    continue
+                if graph[nx][ny] == 0 and dist[zp + 1][nx][ny] == -1:
+                    q.append((zp + 1, nx, ny))
+                    dist[zp + 1][nx][ny] = dist[zp][xp][yp] + 1
+        for dx, dy in direction:
             nx, ny = xp + dx, yp + dy
-            if not (0 <= nx < H and 0 <= ny < W):
+            if not (0 <= nx < R and 0 <= ny < C):
                 continue
-            if dist[zp+1][nx][ny] == -1 and graph[nx][ny] == 0:
-                queue.append((zp+1, nx, ny))
-                dist[zp+1][nx][ny] = dist[zp][xp][yp] + 1
-    # 원숭이처럼만 움직임.
-    for dx, dy in direction_monkey:
-        nx, ny = xp + dx, yp + dy
-        if not (0 <= nx < H and 0 <= ny < W):
-            continue
-        if dist[zp][nx][ny] == -1 and graph[nx][ny] == 0:
-            queue.append((zp, nx, ny))
-            dist[zp][nx][ny] = dist[zp][xp][yp] + 1
+            if graph[nx][ny] == 0 and dist[zp][nx][ny] == -1:
+                q.append((zp, nx, ny))
+                dist[zp][nx][ny] = dist[zp][xp][yp] + 1
+    return -1
 
-print(-1)
+
+print(solution(K, H, W, graph))

@@ -1,18 +1,19 @@
 import sys
+
 input = sys.stdin.readline
 
 N, M = map(int, input().split())
 
-answer = [0] * M
+arr = [-1] * M
 
 
-def backtrack(start, k):
+def backtrack(k, start):
     if k == M:
-        print(*answer)
+        print(*arr)
         return
-    for i in range(start, N+1):
-        answer[k] = i
-        backtrack(i, k+1)
+    for i in range(start, N + 1):
+        arr[k] = i
+        backtrack(k + 1, i)
 
 
-backtrack(1, 0)
+backtrack(0, 1)

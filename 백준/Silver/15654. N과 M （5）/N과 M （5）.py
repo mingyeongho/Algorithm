@@ -1,25 +1,24 @@
 import sys
+
 input = sys.stdin.readline
 
 N, M = map(int, input().split())
-S = list(map(int, input().split()))
-S.sort()
+nums = sorted(list(map(int, input().split())))
 
-visited = [False] * N
-answer = []
+arr = [-1] * M
+used = [False] * (10_001)
 
 
 def backtrack(k):
     if k == M:
-        print(*answer)
+        print(*arr)
         return
-    for i in range(N):
-        if not visited[i]:
-            visited[i] = True
-            answer.append(S[i])
-            backtrack(k+1)
-            visited[i] = False
-            answer.pop()
+    for i in nums:
+        if not used[i]:
+            arr[k] = i
+            used[i] = True
+            backtrack(k + 1)
+            used[i] = False
 
 
 backtrack(0)

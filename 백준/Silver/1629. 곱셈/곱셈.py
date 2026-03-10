@@ -1,18 +1,18 @@
 import sys
 
+sys.setrecursionlimit(10**9)
+
 input = sys.stdin.readline
 
-a, b, c = map(int, input().split())
+A, B, C = map(int, input().split())
 
 
 def recur(a, b, c):
     if b == 1:
         return a % c
-    tmp = recur(a, b // 2, c)
-    if b % 2 == 0:
-        return (tmp * tmp) % c
-    else:
-        return (tmp * tmp % c) * a % c
+    if b % 2:
+        return (recur(a, b - 1, c) * recur(a, 1, c)) % c
+    return (recur(a, b // 2, c) ** 2) % c
 
 
-print(recur(a, b, c))
+print(recur(A, B, C))

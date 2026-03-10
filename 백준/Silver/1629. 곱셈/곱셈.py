@@ -10,9 +10,10 @@ A, B, C = map(int, input().split())
 def recur(a, b, c):
     if b == 1:
         return a % c
+    half = recur(a, b // 2, c)
     if b % 2:
-        return (recur(a, b - 1, c) * recur(a, 1, c)) % c
-    return (recur(a, b // 2, c) ** 2) % c
+        return (half * half * (a % c)) % c
+    return (half * half) % c
 
 
 print(recur(A, B, C))

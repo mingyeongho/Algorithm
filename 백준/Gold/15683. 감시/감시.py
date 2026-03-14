@@ -61,7 +61,7 @@ def fill(x: int, y: int, direct: list[int]):
     return temp
 
 
-def recur(k: int, dist: list[list[int]]):
+def recur(k: int):
     global mn
     if k == len(cctvs):
         cnt = 0
@@ -75,12 +75,10 @@ def recur(k: int, dist: list[list[int]]):
     cctv, x, y = cctvs[k]
     for direct in direction[cctv]:
         temp = fill(x, y, direct)
-        dist.append(direct)
-        recur(k + 1, dist)
+        recur(k + 1)
         for i, j in temp:
             board[i][j] = False
-        dist.pop()
 
 
-recur(0, [])
+recur(0)
 print(mn)

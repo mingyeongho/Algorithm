@@ -26,38 +26,22 @@ for i in range(N):
 
 mn = N * M
 
+delta = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+
 
 def fill(x: int, y: int, direct: list[int]):
     temp = []  # 어떤 값을 바꿨는지 기억하는 배열, (i, j)
     for d in direct:
-        if d == 0:
-            for i in range(x, -1, -1):
-                if graph[i][y] == 6:
-                    break
-                if not board[i][y]:
-                    board[i][y] = True
-                    temp.append((i, y))
-        elif d == 1:
-            for j in range(y, M):
-                if graph[x][j] == 6:
-                    break
-                if not board[x][j]:
-                    board[x][j] = True
-                    temp.append((x, j))
-        elif d == 2:
-            for i in range(x, N):
-                if graph[i][y] == 6:
-                    break
-                if not board[i][y]:
-                    board[i][y] = True
-                    temp.append((i, y))
-        else:
-            for j in range(y, -1, -1):
-                if graph[x][j] == 6:
-                    break
-                if not board[x][j]:
-                    board[x][j] = True
-                    temp.append((x, j))
+        dx, dy = delta[d]
+        nx, ny = x, y
+        while 0 <= nx < N and 0 <= ny < M:
+            if graph[nx][ny] == 6:
+                break
+            if not board[nx][ny]:
+                board[nx][ny] = True
+                temp.append((nx, ny))
+            nx += dx
+            ny += dy
     return temp
 
 

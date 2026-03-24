@@ -16,8 +16,10 @@ def bfs(graph, z, x, y, dist):
 
     while q:
         zp, xp, yp = q.popleft()
-        if zp == 4 and xp == 4 and yp == 4:
+        if (zp, xp, yp) == (4, 4, 4):
             return dist[zp][xp][yp]
+        if dist[zp][xp][yp] >= answer:
+            return -1
         for dz, dx, dy in direction:
             nz, nx, ny = zp + dz, xp + dx, yp + dy
             if not (0 <= nz < 5 and 0 <= nx < 5 and 0 <= ny < 5):
@@ -35,12 +37,16 @@ def rotate(board: list[list[int]]):
 # 완성된 미로를 회전시키며 최종 미로를 만드는 함수
 def make_final_maze(k):
     global maze, answer
+    if answer == 12:
+        return
     if k == 5:
-        if maze[0][0][0] == 1:
-            dist = [[[-1] * 5 for _ in range(5)] for _ in range(5)]
-            d = bfs(maze, 0, 0, 0, dist)
-            if d > -1:
-                answer = min(answer, d)
+        # 시작점과 끝점 확인
+        if maze[0][0][0] == 0 or maze[4][4][4] == 0:
+            return
+        dist = [[[-1] * 5 for _ in range(5)] for _ in range(5)]
+        d = bfs(maze, 0, 0, 0, dist)
+        if d > -1:
+            answer = min(answer, d)
         return
 
     for _ in range(4):
@@ -50,6 +56,8 @@ def make_final_maze(k):
 
 # 5개의 판을 쌓아서 미로를 만드는 함수
 def make_maze(k):
+    if answer == 12:
+        return
     if k == 5:
         make_final_maze(0)
         return
